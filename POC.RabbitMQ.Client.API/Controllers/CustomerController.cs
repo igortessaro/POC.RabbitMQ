@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using POC.RabbitMQ.Domain.Command.Customer;
 using POC.RabbitMQ.Domain.DataObjectTransfer;
-using POC.RabbitMQ.Domain.Factories;
 using POC.RabbitMQ.Domain.Services;
-using RabbitMQ.Client;
 
 namespace POC.RabbitMQ.Client.API.Controllers
 {
@@ -31,6 +20,13 @@ namespace POC.RabbitMQ.Client.API.Controllers
         public IActionResult GetSuccess()
         {
             return Ok(new ResponseDto<string>(true, "OK"));
+        }
+
+        [HttpGet("status")]
+        public IActionResult GetStatus()
+        {
+            QueueStatusDto result = this.CustomerService.GetQueueStatus();
+            return Ok(new ResponseDto<QueueStatusDto>(true, result));
         }
 
         [HttpPost]

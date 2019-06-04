@@ -21,9 +21,12 @@ namespace POC.RabbitMQ.Client.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            RabbitMQConfig rabbitMQConfig = new RabbitMQConfig();
-            this.Configuration.Bind("RabbitMQ", rabbitMQConfig);
-            services.AddSingleton(rabbitMQConfig);
+            //RabbitMQConfig rabbitMQConfig = new RabbitMQConfig();
+            CustomerRabbitMQConfig customerRabbitMQConfig = new CustomerRabbitMQConfig();
+            //this.Configuration.Bind("RabbitMQ", rabbitMQConfig);
+            this.Configuration.Bind("RabbitMQ:CustomerRabbitMQ", customerRabbitMQConfig);
+            //services.AddSingleton(rabbitMQConfig);
+            services.AddSingleton(customerRabbitMQConfig);
 
             ServiceCollectionBootstrapper.ConfigureServices(services);
 

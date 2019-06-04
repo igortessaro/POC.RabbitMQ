@@ -1,4 +1,5 @@
 ﻿using POC.RabbitMQ.Domain.Config;
+using POC.RabbitMQ.Domain.DataObjectTransfer;
 using POC.RabbitMQ.Domain.Services;
 using RabbitMQ.Client;
 using System;
@@ -8,7 +9,61 @@ namespace POC.RabbitMQ.Infrastructure.Facade
 {
     public class RabbitService : IRabbitService
     {
-        public bool SendMessage<T>(RabbitMQConnectionConfig connectionConfig, RabbitQueueConfig queue, string exchange, string routingKey, T body)
+        public QueueStatusDto GetQueueStatus(RabbitMQConnectionConfig connectionConfig, RabbitMQQueueConfig queue, RabbitMQExchangeConfig exchange, string routingKey)
+        {
+            this.ValidateRules(connectionConfig, queue, exchange);
+
+            QueueStatusDto result;
+
+            ConnectionFactory factory = this.CreateConnectionFactory(connectionConfig);
+
+            using (IConnection connection = factory.CreateConnection())
+            using (IModel channel = connection.CreateModel())
+            {
+                QueueDeclareOk queueDeclare = channel.QueueDeclarePassive(queue.Name);
+                result = new QueueStatusDto(queueDeclare.QueueName, (int)queueDeclare.MessageCount, (int)queueDeclare.ConsumerCount);
+            }
+
+            return result;
+        }
+
+        public bool SendMessage<T>(RabbitMQConnectionConfig connectionConfig, RabbitMQQueueConfig queue, RabbitMQExchangeConfig exchange, string routingKey, T body)
+        {
+            this.ValidateRules(connectionConfig, queue, exchange);
+
+            if (body == null)
+            {
+                throw new ArgumentNullException(nameof(body));
+            }
+
+            ConnectionFactory factory = this.CreateConnectionFactory(connectionConfig);
+
+            using (IConnection connection = factory.CreateConnection())
+            using (IModel channel = connection.CreateModel())
+            {
+                // Criar exchange
+                channel.ExchangeDeclare(exchange.Name, exchange.Type, exchange.Durable, exchange.AutoDelete);
+
+                // Criar fila...
+                channel.QueueDeclare(queue.Name, queue.Durable, queue.Exclusive, queue.AutoDelete);
+
+                // Bind da fila com a exchange/routingkey
+                channel.QueueBind(queue.Name, exchange.Name, routingKey, null);
+
+                IBasicProperties basicProperties = channel.CreateBasicProperties();
+                basicProperties.Persistent = true;
+
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(body);
+                byte[] payload = Encoding.UTF8.GetBytes(json);
+
+                // Send
+                channel.BasicPublish(exchange.Name, routingKey, basicProperties, payload);
+            }
+
+            return true;
+        }
+
+        private void ValidateRules(RabbitMQConnectionConfig connectionConfig, RabbitMQQueueConfig queue, RabbitMQExchangeConfig exchange)
         {
             if (connectionConfig == null)
             {
@@ -20,11 +75,14 @@ namespace POC.RabbitMQ.Infrastructure.Facade
                 throw new ArgumentNullException(nameof(queue));
             }
 
-            if (body == null)
+            if (exchange == null)
             {
-                throw new ArgumentNullException(nameof(body));
+                throw new ArgumentNullException(nameof(exchange));
             }
+        }
 
+        private ConnectionFactory CreateConnectionFactory(RabbitMQConnectionConfig connectionConfig)
+        {
             ConnectionFactory factory = new ConnectionFactory()
             {
                 HostName = connectionConfig.HostName,
@@ -33,25 +91,7 @@ namespace POC.RabbitMQ.Infrastructure.Facade
                 Password = connectionConfig.Password
             };
 
-            using (IConnection connection = factory.CreateConnection())
-            using (IModel channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: queue.Name,
-                                     durable: queue.Durable,
-                                     exclusive: queue.Exclusive,
-                                     autoDelete: queue.AutoDelete,
-                                     arguments: null);
-
-                IBasicProperties basicProperties = channel.CreateBasicProperties();
-                basicProperties.Persistent = true;
-
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(body);
-                byte[] payload = Encoding.UTF8.GetBytes(json);
-
-                channel.BasicPublish(exchange: exchange, routingKey: routingKey, basicProperties: basicProperties, body: payload);
-            }
-
-            return true;
+            return factory;
         }
     }
 }

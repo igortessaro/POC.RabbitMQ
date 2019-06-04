@@ -9,7 +9,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POC.RabbitMQ.Domain", "POC.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POC.RabbitMQ.Infrastructure", "POC.RabbitMQ.Infrastructure\POC.RabbitMQ.Infrastructure.csproj", "{1F71FF0E-77FC-41DE-9913-97E621A061A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POC.RabbitMQ.Consumer", "POC.RabbitMQ.Consumer\POC.RabbitMQ.Consumer.csproj", "{C7B656DC-EF4B-4100-A44B-B20F267248D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POC.RabbitMQ.Consumer", "POC.RabbitMQ.Consumer\POC.RabbitMQ.Consumer.csproj", "{C7B656DC-EF4B-4100-A44B-B20F267248D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Postman", "Postman", "{DCB49249-B5FA-4EEB-AE15-2A84AC5212F2}"
+	ProjectSection(SolutionItems) = preProject
+		Postman\POC.RabbitMQ.postman_collection.json = Postman\POC.RabbitMQ.postman_collection.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Environment", "Environment", "{C2E90432-DECF-4C83-B824-E0745BA2B03E}"
+	ProjectSection(SolutionItems) = preProject
+		Postman\Environment\Dev.postman_environment.json = Postman\Environment\Dev.postman_environment.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +46,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C2E90432-DECF-4C83-B824-E0745BA2B03E} = {DCB49249-B5FA-4EEB-AE15-2A84AC5212F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {940B1356-1720-48AC-9B49-C7CAC4A844B5}

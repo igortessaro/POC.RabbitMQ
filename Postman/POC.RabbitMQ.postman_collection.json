@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "b3acbd18-c8f5-44b8-86f5-53ff4f715615",
+		"name": "POC.RabbitMQ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Customer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"Fulano\",\r\n  \"lastName\": \"Silva Silva\",\r\n  \"birthday\": \"1988-05-31T01:44:24.009Z\"\r\n}"
+				},
+				"url": {
+					"raw": "http://{{Server}}/api/Customer",
+					"protocol": "http",
+					"host": [
+						"{{Server}}"
+					],
+					"path": [
+						"api",
+						"Customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Status Queue Customer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{Server}}/api/Customer/status",
+					"protocol": "http",
+					"host": [
+						"{{Server}}"
+					],
+					"path": [
+						"api",
+						"Customer",
+						"status"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
