@@ -5,7 +5,7 @@ using RabbitMQ.Client;
 using System;
 using System.Text;
 
-namespace POC.RabbitMQ.Infrastructure.Facade
+namespace POC.RabbitMQ.Infrastructure.Services
 {
     public class RabbitService : IRabbitService
     {
